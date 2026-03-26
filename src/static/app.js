@@ -16,33 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const timeFilters = document.querySelectorAll(".time-filter");
   const difficultyFilters = document.querySelectorAll(".difficulty-filter");
 
-  // Dark mode toggle
-  const themeToggle = document.getElementById("theme-toggle");
-  const themeIcon = document.getElementById("theme-icon");
-
-  function applyTheme(isDark) {
-    if (isDark) {
-      document.body.classList.add("dark-mode");
-      themeIcon.textContent = "☀️";
-      themeToggle.setAttribute("aria-label", "Switch to light mode");
-      themeToggle.setAttribute("title", "Switch to light mode");
-    } else {
-      document.body.classList.remove("dark-mode");
-      themeIcon.textContent = "🌙";
-      themeToggle.setAttribute("aria-label", "Switch to dark mode");
-      themeToggle.setAttribute("title", "Switch to dark mode");
-    }
-  }
-
-  const savedTheme = localStorage.getItem("theme");
-  applyTheme(savedTheme === "dark");
-
-  themeToggle.addEventListener("click", () => {
-    const isDark = document.body.classList.contains("dark-mode");
-    applyTheme(!isDark);
-    localStorage.setItem("theme", !isDark ? "dark" : "light");
-  });
-
   // Authentication elements
   const loginButton = document.getElementById("login-button");
   const userInfo = document.getElementById("user-info");
@@ -487,6 +460,13 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
+      // Apply difficulty filter
+      if (currentDifficulty) {
+        if ((details.difficulty || "") !== currentDifficulty) {
+          return;
+        }
+      }
+
       // Activity passed all filters, add to filtered list
       filteredActivities[name] = details;
     });
@@ -542,6 +522,11 @@ document.addEventListener("DOMContentLoaded", () => {
       </span>
     `;
 
+    // Create difficulty badge (only shown when difficulty is specified)
+    const difficultyBadgeHtml = details.difficulty
+      ? `<span class="difficulty-badge difficulty-${details.difficulty.toLowerCase()}">${details.difficulty}</span>`
+      : "";
+
     // Create capacity indicator
     const capacityIndicator = `
       <div class="capacity-container ${capacityStatusClass}">
@@ -557,6 +542,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     activityCard.innerHTML = `
       ${tagHtml}
+      ${difficultyBadgeHtml}
       <h4>${name}</h4>
       <p>${details.description}</p>
       <p class="tooltip">
@@ -684,7 +670,7 @@ document.addEventListener("DOMContentLoaded", () => {
       difficultyFilters.forEach((btn) => btn.classList.remove("active"));
       button.classList.add("active");
 
-      // Update current difficulty filter and re-display activities
+      // Update difficulty filter and re-display (client-side filter)
       currentDifficulty = button.dataset.difficulty;
       displayFilteredActivities();
     });
