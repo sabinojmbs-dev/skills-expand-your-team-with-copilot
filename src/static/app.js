@@ -515,6 +515,37 @@ document.addEventListener("DOMContentLoaded", () => {
     // Format the schedule using the new helper function
     const formattedSchedule = formatSchedule(details);
 
+    // Build share URL and text for social sharing
+    const shareUrl = `${window.location.origin}${window.location.pathname}?activity=${encodeURIComponent(name)}`;
+    const shareText = `Check out "${name}" at Mergington High School! ${details.description} Schedule: ${formattedSchedule}`;
+    const encodedShareText = encodeURIComponent(shareText);
+    const encodedShareUrl = encodeURIComponent(shareUrl);
+
+    // Create share buttons section
+    const shareSectionHtml = `
+      <div class="share-buttons">
+        <span class="share-label">Share:</span>
+        <a class="share-button share-twitter tooltip"
+           href="https://twitter.com/intent/tweet?text=${encodedShareText}&url=${encodedShareUrl}"
+           target="_blank" rel="noopener noreferrer">
+          X<span class="tooltip-text">Share on X (Twitter)</span>
+        </a>
+        <a class="share-button share-facebook tooltip"
+           href="https://www.facebook.com/sharer/sharer.php?u=${encodedShareUrl}"
+           target="_blank" rel="noopener noreferrer">
+          f<span class="tooltip-text">Share on Facebook</span>
+        </a>
+        <a class="share-button share-whatsapp tooltip"
+           href="https://wa.me/?text=${encodeURIComponent(shareText + " " + shareUrl)}"
+           target="_blank" rel="noopener noreferrer">
+          W<span class="tooltip-text">Share on WhatsApp</span>
+        </a>
+        <button class="share-button share-copy tooltip" data-url="${shareUrl}">
+          🔗<span class="tooltip-text">Copy link</span>
+        </button>
+      </div>
+    `;
+
     // Create activity tag
     const tagHtml = `
       <span class="activity-tag activity-tag-${activityType}">
@@ -590,6 +621,7 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         `
         }
+        ${shareSectionHtml}
       </div>
     `;
 
@@ -607,6 +639,30 @@ document.addEventListener("DOMContentLoaded", () => {
           openRegistrationModal(name);
         });
       }
+    }
+
+    // Add click handler for copy link button
+    const copyButton = activityCard.querySelector(".share-copy");
+    if (copyButton) {
+      copyButton.addEventListener("click", async () => {
+        const url = copyButton.dataset.url;
+        try {
+          await navigator.clipboard.writeText(url);
+          showMessage("Link copied to clipboard!", "success");
+        } catch {
+          // Fallback for environments without Clipboard API (legacy browsers)
+          // document.execCommand is deprecated but kept as a last-resort fallback
+          const textArea = document.createElement("textarea");
+          textArea.value = url;
+          textArea.style.position = "fixed";
+          textArea.style.opacity = "0";
+          document.body.appendChild(textArea);
+          textArea.select();
+          document.execCommand("copy");
+          document.body.removeChild(textArea);
+          showMessage("Link copied to clipboard!", "success");
+        }
+      });
     }
 
     activitiesList.appendChild(activityCard);
