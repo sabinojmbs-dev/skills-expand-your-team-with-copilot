@@ -15,6 +15,33 @@ document.addEventListener("DOMContentLoaded", () => {
   const dayFilters = document.querySelectorAll(".day-filter");
   const timeFilters = document.querySelectorAll(".time-filter");
 
+  // Dark mode toggle
+  const themeToggle = document.getElementById("theme-toggle");
+  const themeIcon = document.getElementById("theme-icon");
+
+  function applyTheme(isDark) {
+    if (isDark) {
+      document.body.classList.add("dark-mode");
+      themeIcon.textContent = "☀️";
+      themeToggle.setAttribute("aria-label", "Switch to light mode");
+      themeToggle.setAttribute("title", "Switch to light mode");
+    } else {
+      document.body.classList.remove("dark-mode");
+      themeIcon.textContent = "🌙";
+      themeToggle.setAttribute("aria-label", "Switch to dark mode");
+      themeToggle.setAttribute("title", "Switch to dark mode");
+    }
+  }
+
+  const savedTheme = localStorage.getItem("theme");
+  applyTheme(savedTheme === "dark");
+
+  themeToggle.addEventListener("click", () => {
+    const isDark = document.body.classList.contains("dark-mode");
+    applyTheme(!isDark);
+    localStorage.setItem("theme", !isDark ? "dark" : "light");
+  });
+
   // Authentication elements
   const loginButton = document.getElementById("login-button");
   const userInfo = document.getElementById("user-info");
@@ -501,7 +528,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Create activity tag
     const tagHtml = `
-      <span class="activity-tag" style="background-color: ${typeInfo.color}; color: ${typeInfo.textColor}">
+      <span class="activity-tag activity-tag-${activityType}">
         ${typeInfo.label}
       </span>
     `;

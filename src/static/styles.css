@@ -195,8 +195,6 @@ section h3 {
   position: absolute;
   top: 8px;
   right: 8px;
-  background: #e8eaf6;
-  color: #3949ab;
   font-size: 0.65rem;
   font-weight: bold;
   padding: 2px 6px;
@@ -612,11 +610,48 @@ footer {
   }
 }
 
+/* Activity tag type colors */
+.activity-tag-sports { background-color: #e8f5e9; color: #2e7d32; }
+.activity-tag-arts { background-color: #f3e5f5; color: #7b1fa2; }
+.activity-tag-academic { background-color: #e3f2fd; color: #1565c0; }
+.activity-tag-community { background-color: #fff3e0; color: #e65100; }
+.activity-tag-technology { background-color: #e8eaf6; color: #3949ab; }
+
+/* Dark mode */
+body.dark-mode {
+  --background: #121212;
+  --surface: #1e1e1e;
+  --text-primary: #e0e0e0;
+  --text-secondary: #a0a0a0;
+  --border: #444444;
+  --border-light: #2a2a2a;
+  --border-focus: #555555;
+  --success-light: #1b2e1c;
+  --warning-light: #2e2200;
+  --error-light: #2e1010;
+  --info-light: #0a1e24;
+}
+
+body.dark-mode input,
+body.dark-mode textarea {
+  background-color: var(--surface);
+  color: var(--text-primary);
+}
+
+body.dark-mode .activity-tag-sports { background-color: #1a3320; color: #81c784; }
+body.dark-mode .activity-tag-arts { background-color: #2d1840; color: #ce93d8; }
+body.dark-mode .activity-tag-academic { background-color: #0d2137; color: #90caf9; }
+body.dark-mode .activity-tag-community { background-color: #2d1a00; color: #ffb74d; }
+body.dark-mode .activity-tag-technology { background-color: #1a1c3d; color: #9fa8da; }
+
 /* User controls in header */
 #user-controls {
   position: absolute;
   top: 10px;
   right: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 #user-status {
